@@ -1,35 +1,30 @@
-enum TYPE {REFLECTOR,ROTOR};
+enum TYPE {REFLECTOR, ROTOR};
 
-public class Translator extends  Substitutor {
+public class Translator extends Substitutor {
 
     protected char[] PermutationsArray;
     protected char[] reversePermutationsArray;
     protected TYPE type;
 
     public String getTypeAsString() {
-        return (type==TYPE.REFLECTOR)?"REFLECTOR":"ROTOR";
+        return (type == TYPE.REFLECTOR) ? "REFLECTOR" : "ROTOR";
     }
 
     public boolean setType(TYPE type) {
-        if(type.equals(TYPE.REFLECTOR) || type.equals(TYPE.ROTOR))
-        {
+        if (type.equals(TYPE.REFLECTOR) || type.equals(TYPE.ROTOR)) {
             this.type = type;
             return true;
-        }
-        else
+        } else
             return false;
 
     }
 
 
     public boolean setPermutationsArray(char[] permutationsArray) {
-        if(permutationsArray!=null && permutationsArray.length==26)
-        {
+        if (permutationsArray != null && permutationsArray.length == 26) {
             PermutationsArray = permutationsArray;
             return true;
-        }
-        else
-        {
+        } else {
             System.out.println("Permutation array must contain 26 letters");
             return false;
         }
@@ -37,7 +32,7 @@ public class Translator extends  Substitutor {
 
 
     @Override
-    public char forwardTranslate(char letter){
+    public char forwardTranslate(char letter) {
         return 0;
     }
 
@@ -49,8 +44,8 @@ public class Translator extends  Substitutor {
     @Override
     protected void reverseArray() {
         reversePermutationsArray = new char[26];
-        for (int i=0;i<26;i++)
-            reversePermutationsArray[letterToIndex(PermutationsArray[i])]= indexToLetter(i);
+        for (int i = 0; i < 26; i++)
+            reversePermutationsArray[letterToIndex(PermutationsArray[i])] = indexToLetter(i);
 
     }
 

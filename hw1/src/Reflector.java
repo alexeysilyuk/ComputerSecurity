@@ -8,18 +8,18 @@ public class Reflector extends Translator {
     }
 
     @Override
-    public char forwardTranslate(char letter){
+    public char forwardTranslate(char letter) {
         int letterIndex = letterToIndex(letter);
         int permuteLocation = circularShift(letterIndex);
-        char res =  indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
+        char res = indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
         return res;
     }
 
     @Override
-    public char reverseTranslate(char letter){
+    public char reverseTranslate(char letter) {
         int letterIndex = letterToIndex(letter);
         int permuteLocation = circularShift(letterIndex);
-        char res =  indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
+        char res = indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
         return res;
     }
 

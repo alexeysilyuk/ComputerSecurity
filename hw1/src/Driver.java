@@ -1,19 +1,23 @@
-import java.util.Scanner;
 import java.util.HashSet;
+import java.util.Scanner;
 
 
 public class Driver {
     private static Enigma machine;
     private static Scanner input = new Scanner(System.in);
+
     public static void main(String[] args) {
         initMachine();
+        machine.printRotorsStatus();
+        decrypt();
+        machine.printRotorsStatus();
     }
-    public static void initMachine(){
-        //createReflector();
+
+    public static void initMachine() {
         getRotorsFromUser();
     }
 
-    public static void getRotorsFromUser(){
+    public static void getRotorsFromUser() {
 /*
         String leftRotor, middleRotor, rightRotor;
         String leftSetting,middleSetting,rightSetting,leftOffset,middleOffset,rightOffset;
@@ -51,12 +55,13 @@ public class Driver {
         machine = new Enigma(leftRotor,middleRotor,rightRotor,leftOffset,middleOffset,rightOffset,leftSetting,middleSetting,rightSetting);
 */
 
-        machine = new Enigma("I","II","III","F","D","V","A","A","A");
-        decrypt();
+        machine = new Enigma("I", "II", "IV",
+                'S', 'D', 'I',
+                'C', 'H', 'F');
 
     }
 
-    public static boolean checkRotorsValidity(String left, String middle,String right){
+    public static boolean checkRotorsValidity(String left, String middle, String right) {
         HashSet<String> rotorsOption = new HashSet<String>();
         rotorsOption.add("I");
         rotorsOption.add("II");
@@ -71,21 +76,23 @@ public class Driver {
             return false;
     }
 
-    public static boolean checkOffsets(String left, String middle,String right){
+    public static boolean checkOffsets(String left, String middle, String right) {
         return (isLetter(left) && isLetter(middle) && isLetter(right));
     }
 
-    public static boolean checkSettings(String left, String middle,String right){
+    public static boolean checkSettings(String left, String middle, String right) {
         return (isLetter(left) && isLetter(middle) && isLetter(right));
     }
 
-    public static boolean isLetter(String letter){
+    public static boolean isLetter(String letter) {
         return (letter.matches("[A-Z]"));
     }
 
-    public static void decrypt(){
+    public static void decrypt() {
         String in = input.nextLine();
-        for (int i=0;i<in.length();i++)
+        for (int i = 0; i < in.length(); i++)
             machine.step(in.charAt(i));
+
+        System.out.println("");
     }
 }
