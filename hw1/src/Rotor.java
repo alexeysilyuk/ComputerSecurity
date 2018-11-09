@@ -1,49 +1,46 @@
+// Rotor class
 public class Rotor extends Translator {
     private char turnoverAtLetter;
     private int offset;
     private int setting;
     // Constructor receives 2 arrays, first with permutations and second is turnover notch
     public Rotor(char args[][]) {
-        this.setPermutationsArray(args[0]);
-        this.reverseArray();
-        this.setType(TYPE.ROTOR);
-        if (!setTurnoverAtLetter(args[1][0]))
-            turnoverAtLetter = 'Z';   // default value if sended one is incorect
+        setPermutationsArray(args[0]);      // set received permutations array
+        reverseArray();                     // creates reveiced array
+        setTurnoverAtLetter(args[1][0]);    // set turnover letter
     }
+
 
     public int getOffset() {
         return offset;
     }
 
+    // setter for offset
     public void setOffset(char offset) {
         this.offset = letterToIndex(offset);
     }
 
+    // setter for ground setting
     public void setSetting(char setting) {
         this.setting = letterToIndex(setting);
     }
 
-
+    // turnover rotor offset forward
     public void turnOver() {
         this.offset = circularShift(this.offset + 1);
     }
 
 
-    public boolean setTurnoverAtLetter(char turnoverAtLetter) {
-
-        if (turnoverAtLetter >= 'A' && turnoverAtLetter <= 'Z') {
+    public void setTurnoverAtLetter(char turnoverAtLetter) {
             this.turnoverAtLetter = turnoverAtLetter;
-            return true;
-        } else
-            return false;
     }
 
+    // check if it now we must to make turnover
     public boolean isTurnoverNow() {
         return (letterToIndex(turnoverAtLetter) == offset);
-
     }
 
-    @Override
+    // traslate forward ( right to left )
     public char forwardTranslate(char letter) {
         int letterIndex = letterToIndex(letter);
         int permuteLocation = circularShift(letterIndex + offset - setting);
@@ -51,7 +48,7 @@ public class Rotor extends Translator {
         return res;
     }
 
-    @Override
+    // traslate backward, from left to right
     public char reverseTranslate(char letter) {
         int letterIndex = letterToIndex(letter);
         int permuteLocation = circularShift(letterIndex + offset - setting);

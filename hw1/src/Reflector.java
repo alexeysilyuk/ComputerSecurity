@@ -1,27 +1,16 @@
+// Reflector class
 public class Reflector extends Translator {
 
+    // constructor
     public Reflector(char[] PermutationsArray) {
-        super.setPermutationsArray(PermutationsArray);
-        super.setType(TYPE.REFLECTOR);
-        reverseArray();
-
+        setPermutationsArray(PermutationsArray);
+        reverseArray(); // call reverse permutations array
     }
 
-    @Override
-    public char forwardTranslate(char letter) {
-        int letterIndex = letterToIndex(letter);
-        int permuteLocation = circularShift(letterIndex);
-        char res = indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
-        return res;
+    // receives letter, calculation it's translation inside
+    public char translate(char letter) {
+        int letterIndex = letterToIndex(letter);                // translate received letter to index
+        return indexToLetter(circularShift(letterToIndex(PermutationsArray[letterIndex]))); // translate letter to it's permutation
     }
-
-    @Override
-    public char reverseTranslate(char letter) {
-        int letterIndex = letterToIndex(letter);
-        int permuteLocation = circularShift(letterIndex);
-        char res = indexToLetter(circularShift(letterToIndex(PermutationsArray[permuteLocation])));
-        return res;
-    }
-
 
 }
