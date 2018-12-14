@@ -6,8 +6,10 @@ from random import randrange
 import time
 
 # create socket with remote server
-host = '192.168.42.138'
+host = '192.168.42.140'
 port = 12321
+addr = (host,port)
+udp_socket = socket(AF_INET, SOCK_DGRAM)
 
 packetNumber=0
 
@@ -29,63 +31,79 @@ def generateMessage():
 	# randomly get set of words from words list
 	data = ""
 
-	for i in range(randrange(len(message))):
-		random_index = randrange(len(message))
+	for _ in range(randrange(1,len(message))):
+		random_index = randrange(0,len(message))
 		data = message[random_index]+" "+data
 
 	return data
 
 
 def sendPacket(data):
-	addr = (host,port)
-	udp_socket = socket(AF_INET, SOCK_DGRAM)
 	udp_socket.sendto(data, addr)
 	data = bytes.decode(data)
-	data = udp_socket.recvfrom(1024)
-	print(data[0])
-	udp_socket.close()
 	
-def sendOneDatagram(data):
-	e=0
-	e=xor(e,data)
-	data = "1XX"+data+"E="+e
-	sendPacket(data)
+def sendDPacket(dValue):
+	sendPacket("d="+str(dValue))	#send d value to server
+	responce = udp_socket.recvfrom(1024)
+	print responce[0]
 
-def splitMessageToDatagrams(data):
-	packets=(len(data)/100 )+1
-	d=randrange(packets)
+def sendMessage(data):
+	totalpackets=(len(data)/100 )+1
+	d=randrange(1,totalpackets)
+	sendDPacket(d)
+
 	dataBackup=data
+
 	e=0
-	sendOneDatagram("d="+str(d))	#send d value to server
-	for _ in range(packets):
+	for _ in range(totalpackets):
 		e=xor(e,data[:100])
 		data=data=data[100:]
 
 	data=dataBackup
-	for packetID in range(packets):
-		if packetID<= d:
-			msg=str(packetID+1)+"XX"+data[:100]+"E="+e
+	for packetID in range(totalpackets):
+		header=str(packetID+1)+"/"+str(totalpackets)+"|"
+		packetData=data[:100]
+		if packetID < d:
+			packet=header+packetData+"E="+e
 		else:
-			msg=str(packetID+1)+"XX"+data[:100]
+			packet=header+packetData
 		
 		data=data[100:]
-		sendPacket(msg)
+		if packetID ==2:
+			print "lost Packet: "+packetData
+			continue
+		sendPacket(packet)
+
+	return totalpackets
 
 
+def receiveAnswer(packetsAmount):
+	print "Starting to echo from server..."
+	print "\n**************************  PACKET [ ",packetNumber," ]  **************************\n"
+	for _ in range(packetsAmount):
+		data = udp_socket.recvfrom(1024)
+		print(data[0])
+
+	print "\n**************************  PACKET [ ",packetNumber," ] END  ***********************\n"
 
 
-def sendMessage():
+def generatePacket():
 	data = generateMessage()
 	global packetNumber
 	packetNumber+=1
-	print "\n**************************  PACKET [ ",packetNumber," ]  **************************\n"
-	if len(data) > 100:
-		splitMessageToDatagrams(data)
-	else:
-		sendOneDatagram(data)
-	print "\n**************************  PACKET [ ",packetNumber," ] END  ***********************\n"
+	packetsAmount=1
+	packetsAmount = sendMessage(data)
 
-while True:
+	print "Packet #"+str(packetNumber)+", splitted to "+str(packetsAmount)+" datagrams was sent"
+	receiveAnswer(packetsAmount)
 
-	sendMessage()
-	time.sleep(3)
+
+
+
+# while True:
+# 	generatePacket()
+# 	time.sleep(3)
+
+
+generatePacket()
+udp_socket.close()
