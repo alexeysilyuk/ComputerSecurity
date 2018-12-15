@@ -24,7 +24,7 @@ def generateMessage():
 
 	return data
 
-
+# send packet and wait it's echo crom server
 def sendPacket(data):
 	addr = (host,port)
 	udp_socket = socket(AF_INET, SOCK_DGRAM)
@@ -34,17 +34,12 @@ def sendPacket(data):
 	print(data[0])
 	udp_socket.close()
 	
-def sendOneDatagram(data):
-	data = "1XX"+data
-	sendPacket(data)
-
 def splitMessageToDatagrams(data):
 	packets=(len(data)/100 )+1
-	print "packets: ",packets,", length: ",len(data)
+	print "sending packet splitted to "+str(packets)+" datagrams"
 	for packetID in range(packets):
-		send_now=str(packetID)+"XX"+data[:100]
+		send_now=str(packetID)+"|"+data[:100]
 		data=data[100:]
-		print "sending: "+send_now
 		sendPacket(send_now)
 
 
@@ -55,8 +50,7 @@ def sendMessage():
 
 	if len(data) > 100:
 		splitMessageToDatagrams(data)
-	else:
-		sendOneDatagram(data)
+
 
 while True:
 
